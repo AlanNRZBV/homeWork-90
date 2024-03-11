@@ -6,5 +6,11 @@ export interface ActiveConnections {
 
 export interface IncomingMessage{
   type:string,
-  payload: string
+  payload: UserLine[]
+}
+
+
+export interface UserLine{
+  tool: string,
+  points: number[]
 }

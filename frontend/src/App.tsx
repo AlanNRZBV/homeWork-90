@@ -1,12 +1,35 @@
-import  { useRef, useState } from 'react';
-import { Layer, Line, Stage, Text } from 'react-konva';
+import { useEffect, useRef, useState } from 'react';
+import { Layer, Line, Stage } from 'react-konva';
 import { KonvaEventObject } from 'konva/lib/Node';
-import { UserLine } from '../types';
+import { IncomingMessage, UserLine } from '../types';
+
 
 const App = () => {
   const tool = 'pen';
   const [lines, setLines] = useState<UserLine[]>([]);
   const isDrawing = useRef(false);
+
+  const ws = useRef<WebSocket | null>(null);
+
+  useEffect(() => {
+    ws.current = new WebSocket('ws://localhost:8000/draw');
+
+    ws.current.addEventListener('close', () => console.log('ws closed'));
+
+    ws.current.addEventListener('message', (e) => {
+      console.log('in message ', e.data)
+      const decodedMessage = JSON.parse(e.data) as IncomingMessage;
+      if (decodedMessage.type === 'NEW_DRAWING') {
+        setLines(prevState => [...prevState, ...decodedMessage.payload])
+      }
+    });
+
+    return () => {
+      if (ws.current) {
+        ws.current.close();
+      }
+    };
+  }, []);
 
   const handleMouseDown = (e: KonvaEventObject<MouseEvent>) => {
     isDrawing.current = true;
@@ -22,6 +45,7 @@ const App = () => {
     }
     const stage = e.target.getStage();
     const point = stage?.getPointerPosition();
+
     const lastLine = lines[lines.length - 1];
     if (point) {
       lastLine.points = lastLine.points.concat([point.x, point.y]);
@@ -32,6 +56,7 @@ const App = () => {
 
   const handleMouseUp = () => {
     isDrawing.current = false;
+    ws.current?.send(JSON.stringify({type:'SEND_DRAWING', payload: lines}))
   };
 
   return (
@@ -44,7 +69,6 @@ const App = () => {
         onMouseup={handleMouseUp}
       >
         <Layer>
-          <Text text="Just start drawing" x={5} y={30} />
           {lines.map((line, i) => (
             <Line
               key={i}
