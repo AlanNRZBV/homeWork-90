@@ -1,13 +1,11 @@
-export interface UserLine{
-  tool: string,
-  points: number[]
+export interface UserLine {
+  tool: string;
+  points: number[];
 }
 
 export interface IncomingDrawMessage {
-  type:'NEW_DRAWING',
-  payload:UserLine[]
+  type: 'NEW_DRAWING';
+  payload: UserLine[];
 }
 
-
-
-export type IncomingMessage = IncomingDrawMessage
+export type IncomingMessage = IncomingDrawMessage;

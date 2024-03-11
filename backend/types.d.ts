@@ -1,16 +1,15 @@
-import {WebSocket} from 'ws'
+import { WebSocket } from 'ws';
 
 export interface ActiveConnections {
-  [id:string]: WebSocket
+  [id: string]: WebSocket;
 }
 
-export interface IncomingMessage{
-  type:string,
-  payload: UserLine[]
+export interface IncomingMessage {
+  type: string;
+  payload: UserLine[];
 }
 
-
-export interface UserLine{
-  tool: string,
-  points: number[]
+export interface UserLine {
+  tool: string;
+  points: number[];
 }

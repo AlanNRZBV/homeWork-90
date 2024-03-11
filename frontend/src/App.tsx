@@ -3,7 +3,6 @@ import { Layer, Line, Stage } from 'react-konva';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { IncomingMessage, UserLine } from '../types';
 
-
 const App = () => {
   const tool = 'pen';
   const [lines, setLines] = useState<UserLine[]>([]);
@@ -17,10 +16,9 @@ const App = () => {
     ws.current.addEventListener('close', () => console.log('ws closed'));
 
     ws.current.addEventListener('message', (e) => {
-      console.log('in message ', e.data)
       const decodedMessage = JSON.parse(e.data) as IncomingMessage;
       if (decodedMessage.type === 'NEW_DRAWING') {
-        setLines(prevState => [...prevState, ...decodedMessage.payload])
+        setLines((prevState) => [...prevState, ...decodedMessage.payload]);
       }
     });
 
@@ -56,7 +54,7 @@ const App = () => {
 
   const handleMouseUp = () => {
     isDrawing.current = false;
-    ws.current?.send(JSON.stringify({type:'SEND_DRAWING', payload: lines}))
+    ws.current?.send(JSON.stringify({ type: 'SEND_DRAWING', payload: lines }));
   };
 
   return (
@@ -85,4 +83,4 @@ const App = () => {
     </div>
   );
 };
-export default App
+export default App;

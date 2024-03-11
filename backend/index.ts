@@ -27,7 +27,6 @@ router.ws('/draw', (ws, _req, _next) => {
           type: 'NEW_DRAWING',
           payload: parsedMessage.payload,
         };
-        console.log('outgoing ', outgoingMsg);
         connection.send(JSON.stringify(outgoingMsg));
       });
     }
