@@ -21,7 +21,7 @@ router.ws('/draw',(ws, _req, _next)=>{
   activeConnections[id] = ws
 
   let username = 'Anonymous'
-  
+
   ws.on('close', ()=>{
     console.log('Client disconnected')
     delete activeConnections[id]
